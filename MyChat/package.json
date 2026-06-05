@@ -1,0 +1,25 @@
+{
+  "name": "mychat",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "GL3",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:client": "rollup -c",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@rollup/plugin-commonjs": "^29.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-terser": "^1.0.0",
+    "cookie": "^1.1.1",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.2.1",
+    "morgan": "^1.11.0",
+    "rollup": "^4.61.1",
+    "ws": "^8.21.0"
+  }
+}
