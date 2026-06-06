@@ -1,22 +1,115 @@
 <!DOCTYPE html>
-<html lang="ru">
-
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой Веб-сокет Чат</title>
-    <link rel="icon" type="image/png" href="favicon.png">
-
-    <div id="chat-window" style="height: 300px; border: 1px solid #ccc; overflow-y: scroll; padding: 10px; margin-bottom: 10px;">
-    </div>
-    
-    <input type="text" id="message-input" placeholder="Введите сообщение...">
-    <button id="send-btn">Залить</button>
-    <script src="dist/bundle.js"></script>
+    <title>Мое Болото Чат</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body { background-color: #1e2511; font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        #auth-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 999; }
+        .modal-box { background: #f4ecd8; padding: 30px; border: 3px solid #5c4033; border-radius: 8px; text-align: center; }
+        .modal-box input { padding: 10px; width: 200px; margin-bottom: 15px; font-size: 16px; }
+        .modal-box button { padding: 10px 20px; background: #7ca942; color: white; border: none; cursor: pointer; font-size: 16px; font-weight: bold; }
+        #chat { max-width: 600px; margin: 0 auto; background: #5c4033; padding: 10px; border-radius: 8px; }
+        #messages { height: 400px; background: #2b351a; overflow-y: scroll; padding: 15px; margin-bottom: 10px; border-radius: 4px; }
+        .msg { margin-bottom: 10px; padding: 8px 12px; border-radius: 6px; max-width: 80%; clear: both; color: black; }
+        .my-msg { background: #7ca942; float: right; }
+        .other-msg { background: #f4ecd8; float: left; }
+        .system { background: none; color: #b2d86c; text-align: center; max-width: 100%; float: none; font-style: italic; }
+        .author { font-size: 11px; font-weight: bold; display: block; margin-bottom: 3px; color: #333; }
+        #form { display: flex; }
+        #input { flex: 1; padding: 12px; font-size: 16px; border: none; border-radius: 4px 0 0 4px; }
+        #send-btn { padding: 12px 24px; background: #7ca942; color: white; border: none; font-weight: bold; cursor: pointer; border-radius: 0 4px 4px 0; }
+    </style>
 </head>
-
 <body>
-    <script src="dist/bundle.js"></script>
-</body>
 
+    <div id="auth-modal">
+        <div class="modal-box">
+            <h2>Добро пожаловать на болото!</h2>
+            <p>Введи свое имя, путник:</p>
+            <input type="text" id="username" placeholder="Имя героя...">
+            <br>
+            <button id="login-btn">Войти</button>
+        </div>
+    </div>
+
+    <div id="chat">
+        <div id="messages"></div>
+        <form id="form">
+            <input id="input" placeholder="Напиши что-нибудь..." autocomplete="off">
+            <button id="send-btn">Послать</button>
+        </form>
+    </div>
+
+    <script>
+        const socket = io();
+        let myName = "";
+
+        const modal = document.getElementById("auth-modal");
+        const usernameInput = document.getElementById("username");
+        const loginBtn = document.getElementById("login-btn");
+        const form = document.getElementById("form");
+        const input = document.getElementById("input");
+        const messagesDiv = document.getElementById("messages");
+
+        function drawMessage(data, isMe) {
+            const div = document.createElement("div");
+
+            if (data.isSystem) {
+                div.className = "msg system";
+                div.innerHTML = "📜 " + data.user + " " + data.text.toLowerCase();
+            } else {
+                if (isMe) {
+                    div.className = "msg my-msg";
+                    div.innerHTML = `<span class="author">Вы</span>` + data.text;
+                } else {
+                    div.className = "msg other-msg";
+                    div.innerHTML = `<span class="author">` + data.user + `</span>` + data.text;
+                }
+            }
+
+            messagesDiv.appendChild(div);
+        }
+
+        loginBtn.onclick = function() {
+            const name = usernameInput.value.trim();
+            if (name !== "") {
+                myName = name;
+                socket.emit("register_user", myName);
+                modal.style.display = "none";
+            } else {
+                alert("Имя не может быть пустым!");
+            }
+        };
+
+        form.onsubmit = function(event) {
+            event.preventDefault();
+            const text = input.value.trim();
+            if (text !== "") {
+                var myMsgObj = { text: text, user: myName, isSystem: false };
+                socket.emit("chat_message", text);
+
+                drawMessage(myMsgObj, true);
+
+                input.value = "";
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+        };
+
+        socket.on("chat_history", function(historyArray) {
+            for (var i = 0; i < historyArray.length; i++) {
+                var msgData = historyArray[i];
+                var isItMe = (msgData.user === myName);
+                drawMessage(msgData, isItMe);
+            }
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; 
+        });
+
+        socket.on("chat_message", function(data) {
+            drawMessage(data, false);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        });
+    </script>
+</body>
 </html>
