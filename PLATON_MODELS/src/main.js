@@ -49,7 +49,12 @@ function getShader(shaderStr, type) {
 }
 
 let u_color1_location;
+let u_zoom_location;
 let u_time_location;
+let u_rotation_location;
+
+let mouse_wheel = 0;
+let rotation_y = 0;
 
 let OldMouse = {
     X: 0.0,
@@ -97,6 +102,8 @@ function initShaders() {
 
             u_time_location = gl.getUniformLocation(program, "u_time");
             u_color1_location = gl.getUniformLocation(program, "Color1");
+            u_zoom_location = gl.getUniformLocation(program, 'Zoom');
+            u_rotation_location = gl.getUniformLocation(program, 'RotationY');
         })
         .catch(error => {
             console.error('Ошибка при подготовке шейдеров:', error);
@@ -118,9 +125,17 @@ function drawScene() {
     // Put colors to shader
     gl.uniform3f(u_color1_location, Color1.color1.r, Color1.color1.g, Color1.color1.b);
 
+    // Put zoom to shader
+    gl.uniform1f(u_zoom_location, mouse_wheel);
+    
+    // Put rotation to shader
+    gl.uniform1f(u_rotation_location, rotation_y);
+
     window.requestAnimationFrame(drawScene);
 }           
 
+
+// Klein bottle module
 function createKleinBottle(uSegments = 80, vSegments = 40) {
     const vertices = [];
     const indices = [];
@@ -214,7 +229,26 @@ export function onStart() {
         Mouse.Y = e.y;
         OldMouse = structuredClone(Mouse);
         flag = true;
+    });         
+
+    canvas.addEventListener('mousemove', (e) => {
+        if (flag) {
+            let deltaX = e.x - OldMouse.X;
+            rotation_y += deltaX * 0.5;
+            OldMouse.X = e.x;
+            OldMouse.Y = e.y;
+        }
     });
+
+    canvas.addEventListener('mouseup', () => {
+        flag = false;
+    });
+
+    canvas.onwheel = (ev) => {
+        mouse_wheel += ev.deltaY / 100;
+        if (mouse_wheel > 10.0) mouse_wheel = 10.0;
+        if (mouse_wheel < -10.0) mouse_wheel = -10.0;
+    };    
 
 
     initGL(canvas);
