@@ -6,7 +6,7 @@ const { Server } = require("socket.io");
 const fs = require("fs"); 
 
 const app = express();
-const port = 8002;
+const port = process.env.PORT || 8002;
 const jsonPath = "./messages.json";
 
 var messagesHistory = [];
@@ -50,6 +50,9 @@ app.use(function (req, res, next) {
 app.use(express.static('user')); 
 app.use(express.static("."));
 
+app.get('/healthz', (req, res) => {
+    res.status(200).send('OK');
+});
 
 app.get("/", function(req, res) {
   res.sendFile(__dirname + "/user/index.html");
