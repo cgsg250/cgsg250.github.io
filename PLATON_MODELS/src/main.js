@@ -4,11 +4,10 @@ import { Pane } from 'tweakpane';
 // 1. Initialize the pane
 const pane = new Pane();
 const btn = pane.addButton({
-    title: 'Click Me',   // Text displayed inside the button
-    label: 'GL3 PLATON MODEL RENDER',     // Optional left-side descriptor label
+    title: 'Click Me',
+    label: 'GL3 PLATON MODEL RENDER',
 });
 
-// 3. Handle click events
 btn.on('click', () => {
     console.log('Button was clicked!');
 });
@@ -52,9 +51,11 @@ let u_color1_location;
 let u_zoom_location;
 let u_time_location;
 let u_rotation_location;
+let u_rotationX_location; 
 
 let mouse_wheel = 0;
 let rotation_y = 0;
+let rotation_x = 0; 
 
 let OldMouse = {
     X: 0.0,
@@ -104,36 +105,30 @@ function initShaders() {
             u_color1_location = gl.getUniformLocation(program, "Color1");
             u_zoom_location = gl.getUniformLocation(program, 'Zoom');
             u_rotation_location = gl.getUniformLocation(program, 'RotationY');
+            u_rotationX_location = gl.getUniformLocation(program, 'RotationX'); 
         })
         .catch(error => {
             console.error('Ошибка при подготовке шейдеров:', error);
         });
 }
 
-
 function drawScene() {
     gl.clearColor(0, 1, 0, 1);
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-    gl.clear(gl.COLOR_BUFFER_BIT);                               
+    gl.clear(gl.COLOR_BUFFER_BIT);
 
     drawKleinBottle(gl, buffers, 0);
 
     let timeFromStart = new Date().getMilliseconds() - startTime;
-    // Put time to shader 
     gl.uniform1f(u_time_location, timeFromStart / 1000.0);
 
-    // Put colors to shader
     gl.uniform3f(u_color1_location, Color1.color1.r, Color1.color1.g, Color1.color1.b);
-
-    // Put zoom to shader
     gl.uniform1f(u_zoom_location, mouse_wheel);
-    
-    // Put rotation to shader
     gl.uniform1f(u_rotation_location, rotation_y);
+    gl.uniform1f(u_rotationX_location, rotation_x); 
 
     window.requestAnimationFrame(drawScene);
-}           
-
+}
 
 // Klein bottle module
 function createKleinBottle(uSegments = 80, vSegments = 40) {
@@ -141,10 +136,10 @@ function createKleinBottle(uSegments = 80, vSegments = 40) {
     const indices = [];
 
     for (let i = 0; i <= uSegments; i++) {
-        const u = (i / uSegments) * Math.PI; 
+        const u = (i / uSegments) * Math.PI;
         
         for (let j = 0; j <= vSegments; j++) {
-            const v = (j / vSegments) * 2 * Math.PI; 
+            const v = (j / vSegments) * 2 * Math.PI;
 
             const cosU = Math.cos(u);
             const sinU = Math.sin(u);
@@ -157,7 +152,7 @@ function createKleinBottle(uSegments = 80, vSegments = 40) {
 
             let finalX = x * 0.2;
             let finalY = z * 0.2;
-            let finalZ = (y - 3.6) * 0.2; 
+            let finalZ = (y - 3.6) * 0.2;
 
             vertices.push(finalX, finalY, finalZ);
         }
@@ -177,13 +172,12 @@ function createKleinBottle(uSegments = 80, vSegments = 40) {
 
     return {
         vertices: new Float32Array(vertices),
-        indices: new Uint16Array(indices) 
+        indices: new Uint16Array(indices)
     };
 }
 
-
-function InitKleinBottle( gl, a = 40, b = 80 ) {
-    const { vertices, indices } = createKleinBottle(a, b); 
+function InitKleinBottle(gl, a = 40, b = 80) {
+    const { vertices, indices } = createKleinBottle(a, b);
     
     const positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -196,10 +190,9 @@ function InitKleinBottle( gl, a = 40, b = 80 ) {
     return {
         position: positionBuffer,
         indices: indexBuffer,
-        indexCount: indices.length 
+        indexCount: indices.length
     };
 }
-
 
 function drawKleinBottle(gl, buffers, positionAttributeLocation) {
     gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position);
@@ -217,7 +210,7 @@ let buffers = {
     indices: 0,
     indexCount: 0
 };
-                             
+
 export function onStart() {
     let flag = false;
     let first = true;
@@ -229,12 +222,14 @@ export function onStart() {
         Mouse.Y = e.y;
         OldMouse = structuredClone(Mouse);
         flag = true;
-    });         
+    });
 
     canvas.addEventListener('mousemove', (e) => {
         if (flag) {
             let deltaX = e.x - OldMouse.X;
+            let deltaY = e.y - OldMouse.Y;
             rotation_y += deltaX * 0.5;
+            rotation_x += deltaY * 0.5;
             OldMouse.X = e.x;
             OldMouse.Y = e.y;
         }
@@ -248,8 +243,7 @@ export function onStart() {
         mouse_wheel += ev.deltaY / 100;
         if (mouse_wheel > 10.0) mouse_wheel = 10.0;
         if (mouse_wheel < -10.0) mouse_wheel = -10.0;
-    };    
-
+    };
 
     initGL(canvas);
     initShaders();

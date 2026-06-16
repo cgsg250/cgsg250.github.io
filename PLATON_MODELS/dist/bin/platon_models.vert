@@ -27,20 +27,30 @@ mat4 MatrRotateX(float AngleInDegree) {
 uniform float u_time;
 uniform float Zoom;
 uniform float RotationY;
+uniform float RotationX; 
 
 void main() {
     float angleY = RotationY;
     float cosY = cos(radians(angleY));
     float sinY = sin(radians(angleY));
 
+    float angleX = -90.0 + RotationX; 
+    float cosX = cos(radians(angleX));
+    float sinX = sin(radians(angleX));
+
+    vec3 posAfterX;
+    posAfterX.x = a_pos.x;
+    posAfterX.y = a_pos.y * cosX - a_pos.z * sinX;
+    posAfterX.z = a_pos.y * sinX + a_pos.z * cosX;
+
     vec3 rotatedPos;
-    rotatedPos.x = a_pos.x * cosY + a_pos.z * sinY;
-    rotatedPos.y = a_pos.y;
-    rotatedPos.z = a_pos.z * cosY - a_pos.x * sinY;
+    rotatedPos.x = posAfterX.x * cosY + posAfterX.z * sinY;
+    rotatedPos.y = posAfterX.y;
+    rotatedPos.z = posAfterX.z * cosY - posAfterX.x * sinY;
 
     float zoomFactor = 1.0 / Zoom;
-    if (zoomFactor < 0.5) zoomFactor = 0.5;
-    if (zoomFactor > 2.0) zoomFactor = 2.0;
+    if (zoomFactor < 0.2) zoomFactor = 0.2;
+    if (zoomFactor > 3.0) zoomFactor = 3.0;
 
     vec3 finalPos = rotatedPos * zoomFactor;
 
