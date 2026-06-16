@@ -4,40 +4,44 @@ import { Pane } from 'tweakpane';
 // 1. Initialize the pane
 const pane = new Pane();
 const btn = pane.addButton({
-    title: 'Click Me',   // Text displayed inside the button
-    label: 'GL3 FRACTAL',     // Optional left-side descriptor label
+    title: 'Pause/Play',
+    label: 'GL3 FRACTAL',
 });
-// 3. Handle click events
+
+let isPaused = false;
+
 btn.on('click', () => {
-    console.log('Button was clicked!');
+    isPaused = !isPaused;
+    console.log(isPaused ? 'Paused' : 'Playing');
+    btn.title = isPaused ? 'Play' : 'Pause';
 });
 
 const Color1 = {
-    color1: { r: 1.0, g: 0.5, b: 0.0 },
+    color1: { r: 0.0, g: 0.0, b: 0.0 },
 };
 
 pane.addBinding(Color1, 'color1', {
-    view: 'color1',
+    view: 'color',
     label: 'Color1',
 }).on('change', (ev) => {
     console.log('Новые значения для шейдера:', ev.value);
 });
 
 const Color2 = {
-    color2: { r: 1.0, g: 0.5, b: 0.1 },
+    color2: { r: 1.0, g: 5.0, b: 1.0 },
 };
 
 pane.addBinding(Color2, 'color2', {
-    view: 'color2',
+    view: 'color',
     label: 'Color2',
 }).on('change', (ev) => {
     console.log('Новые значения для шейдера:', ev.value);
 });
 
 // Fractal
-
 let gl;
 let startTime;
+let pausedTime = 0;
 
 function initGL(canvas) {
     gl = canvas.getContext("webgl2");
@@ -47,7 +51,6 @@ function initGL(canvas) {
 
 function getShader(shaderStr, type) {
     const shader = gl.createShader(type);
-
     gl.shaderSource(shader, shaderStr);
     gl.compileShader(shader);
 
@@ -86,7 +89,6 @@ let GlobalOffset = {
     Y: 0.0
 };
 
-// Функция загрузки возвращает Promise с текстом файла
 function loadShaderText(url) {
     return fetch(url).then(response => {
         if (!response.ok) {
@@ -97,13 +99,11 @@ function loadShaderText(url) {
 }
 
 function initShaders() {
-    // Передаем массив путей напрямую в Promise.all
     Promise.all([
         loadShaderText('fractal.frag'),
         loadShaderText('fractal.vert')
     ])
     .then(sources => {
-        // Извлекаем текст шейдеров из полученного массива
         const fragSource = sources[0];
         const vertSource = sources[1];
 
@@ -147,23 +147,35 @@ function initBuffer() {
     );
 }
 
-function drawScene() {
-    gl.clearColor(0, 1, 0, 1);
+let lastFrameTime = 0;
+
+function drawScene(currentTime) {
+    currentTime *= 0.001;
+    
+    if (!lastFrameTime) {
+        lastFrameTime = currentTime;
+    }
+    
+    let deltaTime = currentTime - lastFrameTime;
+    lastFrameTime = currentTime;
+    
+    if (!isPaused) {
+        pausedTime += deltaTime;
+    }
+
+    gl.clearColor(0, 0, 0, 1);
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
-    let timeFromStart = new Date().getMilliseconds() - startTime;
+    gl.uniform1f(u_time_location, pausedTime);
 
-    // Put time to shader 
-    gl.uniform1f(u_time_location, timeFromStart / 1000.0);
-
-    // Put global offset to shader
-    GlobalOffset.X = GlobalOffset.X + Offset.X;
-    GlobalOffset.Y = GlobalOffset.Y + Offset.Y;
-    gl.uniform1f(u_offsetx_location, GlobalOffset.X);
+    // Accumulate offsets for panning
+    GlobalOffset.X += Offset.X;
+    GlobalOffset.Y += Offset.Y;
+    gl.uniform1f(u_offsetx_location, -GlobalOffset.X);
     gl.uniform1f(u_offsety_location, GlobalOffset.Y);
     Offset.X = 0;
     Offset.Y = 0;
@@ -181,14 +193,13 @@ function drawScene() {
 
 export function onStart() {
     let flag = false;
-    let first = true;
-    let savemouse;
     let canvas = document.getElementById("webgl-canvas");
 
     canvas.addEventListener('mousedown', (e) => {
         Mouse.X = e.x;
         Mouse.Y = e.y;
-        OldMouse = structuredClone(Mouse);
+        OldMouse.X = e.x;
+        OldMouse.Y = e.y;
         flag = true;
     });
 
@@ -197,26 +208,29 @@ export function onStart() {
         flag = false;
     });
 
-    canvas.onmousemove = (ev) => {
+    canvas.addEventListener('mousemove', (ev) => {
         if (flag) {
             Offset.X = ev.x - OldMouse.X;
             Offset.Y = ev.y - OldMouse.Y;
             OldMouse.X = ev.x;
             OldMouse.Y = ev.y;
         }
-    };
+    });
 
     canvas.onwheel = (ev) => {
-        mouse_wheel += ev.deltaY / 100;
+        ev.preventDefault();
+        mouse_wheel += ev.deltaY * 0.001;
+        mouse_wheel = Math.max(0.1, mouse_wheel);
     };
+    
 
     initGL(canvas);
     initShaders();
     initBuffer();
 
-    startTime = new Date().getMilliseconds();
-    drawScene();
+    startTime = new Date().getTime();
+    
+    window.requestAnimationFrame(drawScene);
 }
 
 window.onload = onStart();
-
