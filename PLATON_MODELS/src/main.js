@@ -241,8 +241,8 @@ export function onStart() {
 
     canvas.onwheel = (ev) => {
         mouse_wheel += ev.deltaY / 100;
-        if (mouse_wheel > 10.0) mouse_wheel = 10.0;
-        if (mouse_wheel < -10.0) mouse_wheel = -10.0;
+        if (mouse_wheel > 3.0) mouse_wheel = 3.0;
+        if (mouse_wheel < 0.1) mouse_wheel = 0.1;
     };
 
     initGL(canvas);

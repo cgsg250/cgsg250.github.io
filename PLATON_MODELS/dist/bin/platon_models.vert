@@ -49,7 +49,7 @@ void main() {
     rotatedPos.z = posAfterX.z * cosY - posAfterX.x * sinY;
 
     float zoomFactor = 1.0 / Zoom;
-    if (zoomFactor < 0.2) zoomFactor = 0.2;
+    if (zoomFactor < 0.1) zoomFactor = 0.1;
     if (zoomFactor > 3.0) zoomFactor = 3.0;
 
     vec3 finalPos = rotatedPos * zoomFactor;
