@@ -1,18 +1,132 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="ru">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моя Галерея Проектов</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --accent-color: #38bdf8;
+            --hover-color: #0ea5e9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--accent-color);
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+        }
+
+        .grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 24px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(56, 189, 248, 0.1);
+            border-color: var(--accent-color);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-size: 1.5rem;
+            color: var(--text-color);
+        }
+
+        .card p {
+            color: #94a3b8;
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: #0f172a;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--hover-color);
+        }
+    </style>
 </head>
+<body>
 
-<body style="background-color: white;">
-    <h2>FRACTALS</h2>
-    <a href="./MANDL/dist/index.html">FRACTALS</a>
-    <h2>PLATON MODELS</h2>
-    <a href="./PLATON_MODELS/dist/index.html">PLATON_MODEL</a>
-    <h2>CHAT</h2>
-    <a href="https://shrekchat-v2.onrender.com/">Перейти в чат ShrekChat</a>
-    <h2>TSF (SEA FIGHT)</h2>
-    <a href="https://tsf-production-be63.up.railway.app/">Погаматься</a>
+    <div class="container">
+        <h1>Моя Игровая зона & Лаборатория</h1>
+        
+        <div class="grid">
+            
+            <!-- Фракталы -->
+            <div class="card">
+                <h2>FRACTALS</h2>
+                <p>Погрузитесь в бесконечность. Генератор удивительных математических фракталов, где хаос превращается в идеальный визуальный порядок.</p>
+                <a href="./MANDL/dist/index.html" class="btn">Исследовать</a>
+            </div>
+
+            <!-- Платоновы тела -->
+            <div class="card">
+                <h2>PLATON MODELS</h2>
+                <p>Геометрия совершенства. Интерактивная 3D-демонстрация правильных многогранников. Изучайте форму, вращайте грани и познавайте основы вселенной.</p>
+                <a href="./PLATON_MODELS/dist/index.html" class="btn">Смотреть 3D</a>
+            </div>
+
+            <!-- Чат -->
+            <div class="card">
+                <h2>💬 SHREK CHAT v2</h2>
+                <p>Место для своих. Залетайте в уютное болото нашего лампового чата, чтобы пообщаться с друзьями без лишней цензуры и официоза.</p>
+                <a href="https://onrender.com" target="_blank" class="btn">Войти в чат</a>
+            </div>
+
+            <!-- Морской бой -->
+            <div class="card">
+                <h2>TSF (SEA FIGHT)</h2>
+                <p>Тактическая битва на воде. Старая добрая классика в современном исполнении. Заряжайте торпеды, расставляйте корабли и топите флот соперника!</p>
+                <a href="https://railway.app" target="_blank" class="btn">Погаматься</a>
+            </div>
+
+        </div>
+    </div>
+
 </body>
+</html>
 
-</html> 
