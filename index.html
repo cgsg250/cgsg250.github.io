@@ -4,21 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🐉 РЕТРО-АРКАДА 🐉</title>
-    <!-- Подключаем пиксельный шрифт для аутентичности -->
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     
     <style>
-        /* Общие ретро-настройки */
         body {
             font-family: 'Press Start 2P', monospace;
             background-color: #0b0705;
             background-image: 
                 linear-gradient(rgba(180, 20, 20, 0.05) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(180, 20, 20, 0.05) 1px, transparent 1px);
-            background-size: 20px 20px; /* Эффект ЭЛТ-сетки */
-            color: #ffd700; /* Золотой текст */
+            background-size: 20px 20px; 
+            color: #ffd700;
             margin: 0;
             padding: 40px 10px;
             display: flex;
@@ -53,7 +51,6 @@
             text-shadow: 2px 2px 0px #005f4c;
         }
 
-        /* Традиционный китайский узор-разделитель в пикселях */
         .divider {
             text-align: center;
             color: #ff2a2a;
@@ -62,7 +59,6 @@
             font-size: 1.2rem;
         }
 
-        /* Пиксельные карточки в стиле аркадных автоматов */
         .arcade-grid {
             display: flex;
             flex-direction: column;
@@ -82,7 +78,6 @@
             overflow: hidden;
         }
 
-        /* Псевдо-иконки драконов по бокам для антуража */
         .arcade-card::before {
             content: "🐉";
             position: absolute;
@@ -111,7 +106,6 @@
             margin-bottom: 25px;
         }
 
-        /* Кнопки "Вставить монетку / Начать" */
         .insert-coin-btn {
             display: block;
             text-align: center;
@@ -137,7 +131,6 @@
             transform: translateY(4px);
         }
 
-        /* Анимация мерцания вывески */
         @keyframes blink {
             0%, 18%, 22%, 25%, 53%, 57%, 100% {
                 text-shadow: 3px 3px 0px #5c0000, 0 0 10px #ff2a2a, 0 0 20px #ff2a2a;
@@ -148,7 +141,6 @@
             }
         }
 
-        /* Эффект старого кинескопа поверх страницы */
         .crt-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -167,7 +159,7 @@
     <div class="container">
         <header>
             <div class="sub-header">[ ДРЕВНЯЯ ЦИФРОВАЯ ДИНАСТИЯ ]</div>
-            <h1>涅槃 ИГРОВОЙ ЗАЛ 🐉</h1>
+            <h1>АРКАДА НИРВАНЫ 🐉</h1>
             <div class="divider">🏮 ☯ 🏮</div>
         </header>
         
@@ -176,7 +168,7 @@
             <!-- Фракталы -->
             <div class="card arcade-card">
                 <h2>ЗЯО (ФРАКТАЛЫ)</h2>
-                <p>Математический хаос Лабиринта Дракона. Бесконечные узоры, рожденные древней формулой Мандельброта.</p>
+                <p>Математический хаос Лабиринта Дракона. Бесконечные узоры, рожденные древней формулой Джуля.</p>
                 <a href="./MANDL/dist/index.html" class="insert-coin-btn">ИССЛЕДОВАТЬ УЗОР</a>
             </div>
 
@@ -184,7 +176,7 @@
             <div class="card arcade-card">
                 <h2>СВЯЩЕННАЯ ГЕОМЕТРИЯ</h2>
                 <p>Пять правильных тел Платона. Секретные 3D артефакты мудрецов, парящие в цифровой пустоте.</p>
-                <a href="./PLATON_MODELS/dist/index.html" class="insert-coin-btn">ВРАЩАТЬ СФЕРУ</a>
+                <a href="./PLATON_MODELS/dist/index.html" class="insert-coin-btn">БУТЫЛКА КЛЕЙНА</a>
             </div>
 
             <!-- Чат -->
@@ -196,8 +188,8 @@
 
             <!-- Морской бой -->
             <div class="card arcade-card">
-                <h2>БИТВА ЗА ЯНЦЗЫ (TSF)</h2>
-                <p>Олдскульная тактика. Разверни свои джонки, заряжай пороховые пушки и потопи императорский флот!</p>
+                <h2>МОРСКОЙ БОЙ (TSF)</h2>
+                <p>Тактическая битва на воде. Старая добрая классика в современном исполнении. Заряжайте торпеды, расставляйте корабли и топите флот соперника!</p>
                 <a href="https://railway.app" target="_blank" class="insert-coin-btn">ВСТАВИТЬ МОНЕТКУ</a>
             </div>
 
