@@ -3,125 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Моя Галерея Проектов</title>
+    <title>🐉 РЕТРО-АРКАДА 🐉</title>
+    <!-- Подключаем пиксельный шрифт для аутентичности -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
     <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-color: #f8fafc;
-            --accent-color: #38bdf8;
-            --hover-color: #0ea5e9;
-        }
-
+        /* Общие ретро-настройки */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Press Start 2P', monospace;
+            background-color: #0b0705;
+            background-image: 
+                linear-gradient(rgba(180, 20, 20, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(180, 20, 20, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px; /* Эффект ЭЛТ-сетки */
+            color: #ffd700; /* Золотой текст */
             margin: 0;
-            padding: 40px 20px;
+            padding: 40px 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 700px;
             width: 100%;
         }
 
-        h1 {
+        /* Олдскульная неоновая вывеска */
+        header {
             text-align: center;
-            color: var(--accent-color);
-            font-size: 2.5rem;
-            margin-bottom: 40px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+            margin-bottom: 50px;
+            position: relative;
         }
 
-        .grid {
+        h1 {
+            color: #ff2a2a;
+            font-size: 1.6rem;
+            margin: 10px 0;
+            text-shadow: 3px 3px 0px #5c0000, 0 0 10px #ff2a2a;
+            animation: blink 2s infinite alternate;
+        }
+
+        .sub-header {
+            font-size: 0.7rem;
+            color: #00ffcc;
+            text-shadow: 2px 2px 0px #005f4c;
+        }
+
+        /* Традиционный китайский узор-разделитель в пикселях */
+        .divider {
+            text-align: center;
+            color: #ff2a2a;
+            letter-spacing: 5px;
+            margin: 20px 0;
+            font-size: 1.2rem;
+        }
+
+        /* Пиксельные карточки в стиле аркадных автоматов */
+        .arcade-grid {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 35px;
         }
 
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 24px;
-            transition: transform 0.2s, box-shadow 0.2s;
+        .arcade-card {
+            background-color: #140d0a;
+            /* Специфическая пиксельная рамка */
+            border: 4px solid #ff2a2a;
+            box-shadow: 
+                0 0 0 4px #140d0a, 
+                0 0 0 8px #ffd700,
+                8px 8px 0px #000;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(56, 189, 248, 0.1);
-            border-color: var(--accent-color);
-        }
-
-        .card h2 {
-            margin-top: 0;
-            margin-bottom: 8px;
+        /* Псевдо-иконки драконов по бокам для антуража */
+        .arcade-card::before {
+            content: "🐉";
+            position: absolute;
+            right: 15px;
+            top: 15px;
             font-size: 1.5rem;
-            color: var(--text-color);
+            opacity: 0.2;
         }
 
-        .card p {
-            color: #94a3b8;
+        .arcade-card h2 {
             font-size: 1rem;
-            line-height: 1.5;
-            margin-bottom: 16px;
+            color: #00ffcc;
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 0px #005f4c;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .btn {
-            display: inline-block;
-            background-color: var(--accent-color);
-            color: #0f172a;
+        .arcade-card p {
+            color: #e0d0cc;
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+        }
+
+        /* Кнопки "Вставить монетку / Начать" */
+        .insert-coin-btn {
+            display: block;
+            text-align: center;
+            background-color: #ffd700;
+            color: #140d0a;
             text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 6px;
+            padding: 12px;
+            font-size: 0.7rem;
             font-weight: bold;
-            transition: background-color 0.2s;
+            border: 4px solid #140d0a;
+            box-shadow: 0px 4px 0px #b89c00;
+            transition: all 0.1s ease;
         }
 
-        .btn:hover {
-            background-color: var(--hover-color);
+        .insert-coin-btn:hover {
+            background-color: #fff;
+            box-shadow: 0px 2px 0px #b89c00;
+            transform: translateY(2px);
+        }
+
+        .insert-coin-btn:active {
+            box-shadow: 0px 0px 0px #b89c00;
+            transform: translateY(4px);
+        }
+
+        /* Анимация мерцания вывески */
+        @keyframes blink {
+            0%, 18%, 22%, 25%, 53%, 57%, 100% {
+                text-shadow: 3px 3px 0px #5c0000, 0 0 10px #ff2a2a, 0 0 20px #ff2a2a;
+            }
+            20%, 24%, 55% {
+                text-shadow: none;
+                color: #5c0000;
+            }
+        }
+
+        /* Эффект старого кинескопа поверх страницы */
+        .crt-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 6px 100%;
+            z-index: 9999;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
 
+    <!-- Эффект старого монитора -->
+    <div class="crt-overlay"></div>
+
     <div class="container">
-        <h1>Моя Игровая зона & Лаборатория</h1>
+        <header>
+            <div class="sub-header">[ ДРЕВНЯЯ ЦИФРОВАЯ ДИНАСТИЯ ]</div>
+            <h1>涅槃 ИГРОВОЙ ЗАЛ 🐉</h1>
+            <div class="divider">🏮 ☯ 🏮</div>
+        </header>
         
-        <div class="grid">
+        <div class="arcade-grid">
             
             <!-- Фракталы -->
-            <div class="card">
-                <h2>FRACTALS</h2>
-                <p>Погрузитесь в бесконечность. Генератор удивительных математических фракталов, где хаос превращается в идеальный визуальный порядок.</p>
-                <a href="./MANDL/dist/index.html" class="btn">Исследовать</a>
+            <div class="card arcade-card">
+                <h2>ЗЯО (ФРАКТАЛЫ)</h2>
+                <p>Математический хаос Лабиринта Дракона. Бесконечные узоры, рожденные древней формулой Мандельброта.</p>
+                <a href="./MANDL/dist/index.html" class="insert-coin-btn">ИССЛЕДОВАТЬ УЗОР</a>
             </div>
 
             <!-- Платоновы тела -->
-            <div class="card">
-                <h2>PLATON MODELS</h2>
-                <p>Геометрия совершенства. Интерактивная 3D-демонстрация правильных многогранников. Изучайте форму, вращайте грани и познавайте основы вселенной.</p>
-                <a href="./PLATON_MODELS/dist/index.html" class="btn">Смотреть 3D</a>
+            <div class="card arcade-card">
+                <h2>СВЯЩЕННАЯ ГЕОМЕТРИЯ</h2>
+                <p>Пять правильных тел Платона. Секретные 3D артефакты мудрецов, парящие в цифровой пустоте.</p>
+                <a href="./PLATON_MODELS/dist/index.html" class="insert-coin-btn">ВРАЩАТЬ СФЕРУ</a>
             </div>
 
             <!-- Чат -->
-            <div class="card">
-                <h2>💬 SHREK CHAT v2</h2>
-                <p>Место для своих. Залетайте в уютное болото нашего лампового чата, чтобы пообщаться с друзьями без лишней цензуры и официоза.</p>
-                <a href="https://onrender.com" target="_blank" class="btn">Войти в чат</a>
+            <div class="card arcade-card">
+                <h2>SHREK CHAT V2</h2>
+                <p>Чайный домик "Зеленое Болото". Место встречи бродячих воинов и наемников для тайных бесед.</p>
+                <a href="https://onrender.com" target="_blank" class="insert-coin-btn">ЗАЙТИ В ЧАЙНУЮ</a>
             </div>
 
             <!-- Морской бой -->
-            <div class="card">
-                <h2>TSF (SEA FIGHT)</h2>
-                <p>Тактическая битва на воде. Старая добрая классика в современном исполнении. Заряжайте торпеды, расставляйте корабли и топите флот соперника!</p>
-                <a href="https://railway.app" target="_blank" class="btn">Погаматься</a>
+            <div class="card arcade-card">
+                <h2>БИТВА ЗА ЯНЦЗЫ (TSF)</h2>
+                <p>Олдскульная тактика. Разверни свои джонки, заряжай пороховые пушки и потопи императорский флот!</p>
+                <a href="https://railway.app" target="_blank" class="insert-coin-btn">ВСТАВИТЬ МОНЕТКУ</a>
             </div>
 
         </div>
@@ -129,4 +206,3 @@
 
 </body>
 </html>
-
