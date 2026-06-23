@@ -1,13 +1,190 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="ru">
 <head>
-    <h1 style="color: rgb(0, 0, 0); font-size: 3rem;">Бутылка Клейна</h1>
-    <script src="main.js" defer></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Бутылка Клейна · 3D визуализация</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0d1117;
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+            color: #e6edf3;
+        }
+
+        .container {
+            max-width: 720px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* шапка */
+        .header {
+            width: 100%;
+            margin-bottom: 2rem;
+            text-align: center;
+            border-bottom: 1px solid #21262d;
+            padding-bottom: 1.25rem;
+        }
+
+        .header h1 {
+            font-weight: 600;
+            font-size: 2.2rem;
+            letter-spacing: -0.02em;
+            color: #f0f6fc;
+            margin-bottom: 0.2rem;
+        }
+
+        .header h1 span {
+            color: #3fb950;
+        }
+
+        .header .sub {
+            font-weight: 400;
+            font-size: 0.85rem;
+            color: #8b949e;
+        }
+
+        /* обёртка для канваса — неоновая рамка */
+        .canvas-wrapper {
+            background: #161b22;
+            border-radius: 20px;
+            padding: 8px;
+            border: 1px solid #30363d;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(63, 185, 80, 0.05);
+            transition: border-color 0.3s, box-shadow 0.3s;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .canvas-wrapper:hover {
+            border-color: #238636;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7), 0 0 0 1px #3fb950, 0 0 24px rgba(63, 185, 80, 0.08);
+        }
+
+        #webgl-canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            border-radius: 14px;
+            background: #0d1117;
+        }
+
+        /* панель с информацией и статусом */
+        .info-panel {
+            width: 100%;
+            margin-top: 1.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            font-size: 0.8rem;
+            color: #8b949e;
+            border-top: 1px solid #21262d;
+            padding-top: 1.25rem;
+        }
+
+        .info-panel .status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-panel .status .dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #3fb950;
+            box-shadow: 0 0 10px rgba(63, 185, 80, 0.3);
+            animation: pulse-dot 2.4s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        .info-panel .author {
+            font-weight: 500;
+            color: #e6edf3;
+        }
+
+        .info-panel .author span {
+            color: #3fb950;
+            font-weight: 600;
+        }
+
+        .info-panel .badge {
+            background: #0d2818;
+            padding: 0.15rem 0.9rem;
+            border-radius: 40px;
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            color: #3fb950;
+            border: 1px solid #238636;
+            box-shadow: 0 0 6px rgba(63, 185, 80, 0.08);
+        }
+
+        /* адаптив */
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            .info-panel {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+            }
+        }
+    </style>
 </head>
-
 <body>
-    <canvas id="webgl-canvas" style="border: none" width="500" height="500"></canvas>
-</body>
+    <div class="container">
+        <!-- шапка -->
+        <div class="header">
+            <h1>✦ <span>Бутылка</span> Клейна</h1>
+            <div class="sub">трёхмерная визуализация · неориентируемая поверхность</div>
+        </div>
 
+        <!-- канвас с неоновой рамкой -->
+        <div class="canvas-wrapper">
+            <canvas id="webgl-canvas" width="800" height="800"></canvas>
+        </div>
+
+        <!-- нижняя панель -->
+        <div class="info-panel">
+            <div class="status">
+                <span class="dot"></span>
+                <span>активен · 3D рендеринг</span>
+            </div>
+            <div>
+                <span class="author"><span>cgsg250</span> · визуализация</span>
+            </div>
+            <span class="badge">v1.0</span>
+        </div>
+    </div>
+
+    <!-- ваш скрипт -->
+    <script src="main.js" defer></script>
+</body>
 </html>
